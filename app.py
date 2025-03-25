@@ -26,6 +26,19 @@ def charada():
     charada_aleatoria = charadas[id_aleatorio]
     return jsonify(charada_aleatoria), 200
     
+@app.route('/charadas/<campo>/<busca>', methods=['GET'])
+def busca(campo, busca):
+    if campo not in ['id','charada','reposta']:
+        return jsonify({'mensagem':'ERRO - Campo não encontrado'}), 404
+    
+    if campo == 'id':
+        busca = int(busca)
+
+    for charada in charadas:
+        if charada[campo] == busca:
+            return jsonify(charada), 200
+    else:
+        return jsonify({'mensagem':'ERRO! Charada não encontrada!'}), 404
 
 if __name__ == '__main__':
     app.run()
