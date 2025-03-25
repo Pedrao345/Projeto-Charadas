@@ -22,7 +22,7 @@ def index():
 
 @app.route('/charadas', methods=['GET'])
 def charada():
-    id_aleatorio = random.randint(0,10)
+    id_aleatorio = random.randint(0,9)
     charada_aleatoria = charadas[id_aleatorio]
     return jsonify(charada_aleatoria), 200
     
