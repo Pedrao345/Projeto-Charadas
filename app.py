@@ -1,44 +1,115 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import random
+import firebase_admin
+from firebase_admin import credentials, firestore
+from flask_cors import CORS
+import os
+import json
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+CORS(app)
 
-charadas = [
-    {'id': 1, 'charada': 'Qual é a diferença entre a panela e o penico?', 'reposta': 'Se você não sabe, nunca me convide para almoçar na sua casa.'},
-    {'id': 2, 'charada': 'Qual é a diferença entre a sogra e a cobra?', 'reposta': ' As cobras não tem tantas rugas.'},
-    {'id': 3, 'charada': 'Qual o próximo número na sequência: 2, 10, 12, 16, 17, 18, 19, ...?', 'reposta': '200. Todos os números começam com a letra D.'},
-    {'id': 4, 'charada': 'Quais são os três números, nenhum dos quais é zero, que dão o mesmo resultado, quer sejam somados ou multiplicados?', 'reposta': '1, 2 e 3. Pois 1 + 2 + 3 = 6 e 1 x 2 x 3 = 6.'},
-    {'id': 5, 'charada': 'Por que existem camas elásticas no Pólo Norte?', 'reposta': 'Para o urso polar.'},
-    {'id': 6, 'charada': 'O que dá a mistura de uma pulga com a letra A?', 'reposta': 'Um assaltante.'},
-    {'id': 7, 'charada': 'Como se fala policial em japonês?', 'reposta': 'Takatiro.'},
-    {'id': 8, 'charada': 'O que é um pontinho verde em uma noiva?', 'reposta': 'Greenalda.'},
-    {'id': 9, 'charada': 'Qual é a panela que você usa quando está triste?', 'reposta': 'De-pressão.'},
-    {'id': 10, 'charada': 'O que é inteiro mas tem nome de metade?', 'reposta': 'Meia.'},
-]
+load_dotenv()
 
+#Pega a variável de ambiente e converte para JSON
+FBKEY =  json.loads(os.getenv('CONFIG_FIREBASE'))
+
+cred = credentials.Certificate(FBKEY)
+firebase_admin.initialize_app(cred)
+
+
+#Conectando com o Firestone da Firebase
+db = firestore.client()
+
+
+# --------- ROTA PRINCIPAL DE TESTE ---------
 @app.route('/')
 def index():
     return 'CharadAPI tá ON! Ria!', 200
 
+#  ----- MÉTODO GET - CHARADA ALEATÓRIA -----
 @app.route('/charadas', methods=['GET'])
-def charada():
-    id_aleatorio = random.randint(0,9)
-    charada_aleatoria = charadas[id_aleatorio]
-    return jsonify(charada_aleatoria), 200
-    
-@app.route('/charadas/<campo>/<busca>', methods=['GET'])
-def busca(campo, busca):
-    if campo not in ['id','charada','reposta']:
-        return jsonify({'mensagem':'ERRO - Campo não encontrado'}), 404
-    
-    if campo == 'id':
-        busca = int(busca)
+def charada_aleatoria():
+    charadas = []
+    lista = db.collection('charadas').stream()
+    for item in lista:
+        charadas.append(item.to_dict())
 
-    for charada in charadas:
-        if charada[campo] == busca:
-            return jsonify(charada), 200
+    if charadas:
+        return jsonify(random.choice(charadas)), 200
     else:
-        return jsonify({'mensagem':'ERRO! Charada não encontrada!'}), 404
+        return jsonify({'mensagem': 'Erro! Nenhuma charada encontrada'}), 404
+    
+# ----- MÉTODO GET - CHARADA POR ID -----
+@app.route('/charadas/<id>', methods=['GET'])
+def busca(id):
+    doc_ref = db.collection('charadas').document(id)
+    doc = doc_ref.get().to_dict()
+
+    if doc:
+        return jsonify(doc), 200
+    else:
+        return jsonify({'mensagem': 'Charada não encontrada'}), 404
+    
+# ----- MÉTODO POST - ADICIONAR CHARADA -----
+@app.route('/charadas', methods=['POST'])
+def adicionar_charada():
+    dados = request.json
+
+    if "charada" not in dados or "resposta" not in dados:
+        return jsonify({'mensagem': 'Erro. Campos pergunta e reposta são obrigatórios'}), 400
+    
+    #Contador
+    contador_ref = db.collection('controle_id').document('contador')
+    contador_doc = contador_ref.get().to_dict()
+    ultimo_id = contador_doc.get('id')
+    novo_id = int(ultimo_id) + 1
+    contador_ref.update({'id': novo_id})
+
+    db.collection('charadas').document(str(novo_id)).set({
+        "id": novo_id,
+        "charada": dados['charada'],
+        "resposta": dados['resposta']
+    })
+
+    return jsonify({'mensagem': 'Charada cadastrada com sucesso!'}), 201
+
+# ----- MÉTODO PUT - ALTERAR CHARADA -----
+@app.route('/charadas/<id>', methods=['PUT'])
+def alterar_charada(id):
+    dados = request.json
+
+    if "charada" not in dados or "resposta" not in dados:
+        return jsonify({'mensagem': 'Erro. Campos charada e resposta são obrigatórios'})
+    
+    doc_ref = db.collection('charadas').document(id)
+    doc = doc_ref.get()
+
+    if doc.exists:
+        doc_ref.update({
+            "charada": dados['charada'],
+            "resposta": dados['resposta']
+        })
+        return jsonify({'mensagem': 'Charada atualizada com sucesso!'}), 201
+    else:
+        return jsonify({'mensagem': 'Erro. Charada não encontrada!'})
+    
+
+# ----- MÉTODO DELETE - EXCLUIR CHARADA -----
+@app.route('/charadas/<id>', methods=['DELETE'])
+def excluir_charada(id):
+    doc_ref = db.collection('charadas').document(id)
+    doc = doc_ref.get()
+
+    if not doc.exists:
+        return jsonify({'mensagem': 'Erro. Charada não encontrada'}), 404
+    
+    doc_ref.delete()
+    return jsonify({'mensagem': 'Charada excluída com sucesso'}), 200
+    
+
+
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

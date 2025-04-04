@@ -1,0 +1,12 @@
+charadas = [
+    {'id': 1, 'charada': 'Qual é a diferença entre a panela e o penico?', 'resposta': 'Se você não sabe, nunca me convide para almoçar na sua casa.'},
+    {'id': 2, 'charada': 'Qual é a diferença entre a sogra e a cobra?', 'resposta': ' As cobras não tem tantas rugas.'},
+    {'id': 3, 'charada': 'Qual o próximo número na sequência: 2, 10, 12, 16, 17, 18, 19, ...?', 'resposta': '200. Todos os números começam com a letra D.'},
+    {'id': 4, 'charada': 'Quais são os três números, nenhum dos quais é zero, que dão o mesmo resultado, quer sejam somados ou multiplicados?', 'resposta': '1, 2 e 3. Pois 1 + 2 + 3 = 6 e 1 x 2 x 3 = 6.'},
+    {'id': 5, 'charada': 'Por que existem camas elásticas no Pólo Norte?', 'resposta': 'Para o urso polar.'},
+    {'id': 6, 'charada': 'O que dá a mistura de uma pulga com a letra A?', 'resposta': 'Um assaltante.'},
+    {'id': 7, 'charada': 'Como se fala policial em japonês?', 'resposta': 'Takatiro.'},
+    {'id': 8, 'charada': 'O que é um pontinho verde em uma noiva?', 'resposta': 'Greenalda.'},
+    {'id': 9, 'charada': 'Qual é a panela que você usa quando está triste?', 'resposta': 'De-pressão.'},
+    {'id': 10, 'charada': 'O que é inteiro mas tem nome de metade?', 'resposta': 'Meia.'},
+]
