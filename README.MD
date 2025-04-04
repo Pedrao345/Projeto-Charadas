@@ -5,14 +5,14 @@ Esta é uma API RESTful construída com Python e Flask, utilizando o Firebase co
 ## Índice
 [Endpoints da API](#endpoints-da-api)
 [Observações adicionais](#observacoes-adicionais)
-[](#)
+[Repositório Frontend](#repositorio-frontend)
 
 ## Primeiros Passos
 
 Para começar a usar ou executar esta API, siga estas instruções:
 
 1.  **Pré-requisitos:**
-    * Certifique-se de ter o Python 3 instalado em sua máquina.
+    * Certifique-rse de ter o Python 3 instalado em sua máquina.
     * O gerenciador de pacotes pip também é necessário.
 
 2.  **Configuração do Projeto:**
