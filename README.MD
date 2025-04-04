@@ -6,7 +6,7 @@ Esta é uma API RESTful construída com Python e Flask, utilizando o Firebase co
 
 * [Endpoints da API](#endpoints-da-api)
 * [Observações adicionais](#observacoes-adicionais)
-* [Repositório Frontend](#repositorio-frontend)
+* [Repositório Frontend](#repositório-frontend)
 
 ## Primeiros Passos
 
