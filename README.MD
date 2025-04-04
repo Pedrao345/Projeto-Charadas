@@ -3,9 +3,10 @@
 Esta é uma API RESTful construída com Python e Flask, utilizando o Firebase como banco de dados para armazenar charadas (perguntas e suas respectivas respostas). O objetivo principal é fornecer uma maneira fácil de acessar e gerenciar um conjunto de charadas através de requisições HTTP.
 
 ## Índice
-[Endpoints da API](#endpoints-da-api)
-[Observações adicionais](#observacoes-adicionais)
-[Repositório Frontend](#repositorio-frontend)
+
+* [Endpoints da API](#endpoints-da-api)
+* [Observações adicionais](#observacoes-adicionais)
+* [Repositório Frontend](#repositorio-frontend)
 
 ## Primeiros Passos
 
@@ -53,6 +54,12 @@ Para começar a usar ou executar esta API, siga estas instruções:
     ```
 
     A API estará rodando localmente no endereço `http://127.0.0.1:5000/`.
+
+## Tecnologias utilizadas
+
+* ![image](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
+* ![image](https://img.shields.io/badge/json-5E5C5C?style=for-the-badge&logo=json&logoColor=white)
+* ![image](https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)
 
 ## Endpoints da API
 
